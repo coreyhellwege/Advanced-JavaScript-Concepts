@@ -245,6 +245,8 @@ Lexical Environment is the environment of the function where it is written. That
 
 In JavaScript our lexical scope (available data & variables where the function was defined) determines our available variables. Not where the function is called (dynamic scope).
 
+![Lexical Environment Scope](./Assets/LexicalEnvironment.png)
+
 ## Scope
 
 Scope of a variable/function is basically the locations from where a variable is visible/accessible. In JavaScript there are two types of scope:
@@ -329,6 +331,20 @@ Remember, Javascript is single-threaded. There is always only one execution cont
 - The compiler creates a hierarchy of scopes called scope-chain. Global scope sits at the top of this hierarchy.
 - The compiler looks at the scope-chain backward when a variable is used in the code. If it is not found it throws an undefined error.
 
+<i>Example:</i>
+
+```javascript
+const hello = function name() {
+  return "Hey Corey";
+};
+
+hello(); // => Hey Corey
+
+name(); // => Reference error
+
+// name() only exists within the function scope of hello()
+```
+
 #### Errors:
 
 <b>Undefined:</b> Remember `undefined` is an actual type in JavaScript. It means 'yes we have this variable but it's not assigned anything right now'.
@@ -338,3 +354,119 @@ Remember, Javascript is single-threaded. There is always only one execution cont
 #### Tip:
 
 Avoid using the `eval()` function and the `with` statement because they can interfere with the JavaScript engine's ability to optimize our code. This is because they can actually manipulate scope and scope chains, which will conflict with the compiler's ability to read our code.
+
+---
+
+## This
+
+#### `this` is the object that the function is a property of
+
+What's the purpose of `this`?
+
+- It gives methods access to their object
+
+<i>Example:</i>
+
+```javascript
+const object = {
+  name: "Corey",
+  greet() {
+    return "Hello " + this.name;
+  },
+  welcome() {
+    return this.greet() + ", have a nice day!";
+  }
+};
+
+object.greet(); // => 'hello Corey'
+
+object.welcome(); // => 'Hello Corey, have a nice day!'
+```
+
+- It provides the ability to execute the same code for multiple objects
+
+<i>Example:</i>
+
+```javascript
+function startCar() {
+  console.log("The " + this.car + " is running");
+}
+
+const car = "Ford";
+
+const object1 = {
+  car: "Audi",
+  startCar: startCar
+};
+
+const object2 = {
+  car: "BMW",
+  startCar: startCar
+};
+
+startCar(); // => "The Ford is running" (The global window is running the function)
+
+object1.startCar(); // => "The Audi is running" (The object is running the function)
+```
+
+---
+
+## `call()`, `apply()`, `bind()`
+
+JavaScript has a number of built in function/methods that can apply to various data types. These 3 functions are all designed to set CONTEXT, or more specifically, what “this” refers to.
+
+#### `call()`
+
+With the `call()` method, you can write a method that can be used on different objects. It can take parameters and pass in arguments:
+
+```javascript
+const bus = {
+  make: "Scania",
+  fuel: 80,
+  reFuel(tank1, tank2) {
+    return (this.fuel += tank1 + tank2);
+  }
+};
+
+const truck = {
+  make: "Mack",
+  fuel: 20
+};
+
+truck.fuel; // => 20
+
+bus.reFuel.call(truck, 100, 40);
+
+truck.fuel; // => 160
+```
+
+#### `apply()`
+
+Using `.apply()` is very similar to `.call()`. The only difference is that `.call()` takes arg1 and arg2 just one after another.
+For `.apply()` to work, arguments 1 and 2 need to be entered as an array:
+
+```javascript
+bus.reFuel.apply(truck, [100, 40]);
+
+truck.fuel; // => 160
+```
+
+#### `.bind()`
+
+`.bind()`, unlike `.apply()` and `.call()`, returns a function instead of a value. `.bind()` sets the value of this and changes the function to a new function, but it doesn’t invoke the function. It also accepts comma separated arguments, similar to `.call()`.
+
+`.bind()` is generally used when you want to call the function later on, or in a different context:
+
+```javascript
+const refuelTruck = bus.reFuel.bind(truck, 100, 40);
+
+truck.fuel; // => 20
+
+refuelTruck();
+
+truck.fuel; // => 160
+```
+
+<i>Summary:</i>
+
+`.call()` and `.apply()` are useful for borrowing methods from an object, while `.bind()` is useful to call functions later on with a certain context or a certain `this` keyword.
