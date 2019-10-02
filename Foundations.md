@@ -27,7 +27,7 @@ function jsengine(code) {
 }
 
 jsengine("const x = 100");
-// => ['const', 'x', '=', '100']
+// -> ['const', 'x', '=', '100']
 ```
 
 ---
@@ -355,9 +355,9 @@ const hello = function name() {
   return "Hey Corey";
 };
 
-hello(); // => Hey Corey
+hello(); // -> Hey Corey
 
-name(); // => Reference error
+name(); // -> Reference error
 
 // name() only exists within the function scope of hello()
 ```
@@ -395,9 +395,9 @@ const object = {
   }
 };
 
-object.greet(); // => 'hello Corey'
+object.greet(); // -> 'hello Corey'
 
-object.welcome(); // => 'Hello Corey, have a nice day!'
+object.welcome(); // -> 'Hello Corey, have a nice day!'
 ```
 
 - It provides the ability to execute the same code for multiple objects
@@ -421,9 +421,9 @@ const object2 = {
   startCar: startCar
 };
 
-startCar(); // => "The Ford is running" (The global window is running the function)
+startCar(); // -> "The Ford is running" (The global window is running the function)
 
-object1.startCar(); // => "The Audi is running" (The object is running the function)
+object1.startCar(); // -> "The Audi is running" (The object is running the function)
 ```
 
 ---
@@ -450,11 +450,11 @@ const truck = {
   fuel: 20
 };
 
-truck.fuel; // => 20
+truck.fuel; // -> 20
 
 bus.reFuel.call(truck, 100, 40);
 
-truck.fuel; // => 160
+truck.fuel; // -> 160
 ```
 
 #### `apply()`
@@ -465,7 +465,7 @@ For `.apply()` to work, arguments 1 and 2 need to be entered as an array:
 ```javascript
 bus.reFuel.apply(truck, [100, 40]);
 
-truck.fuel; // => 160
+truck.fuel; // -> 160
 ```
 
 #### `.bind()`
@@ -477,11 +477,11 @@ truck.fuel; // => 160
 ```javascript
 const refuelTruck = bus.reFuel.bind(truck, 100, 40);
 
-truck.fuel; // => 20
+truck.fuel; // -> 20
 
 refuelTruck();
 
-truck.fuel; // => 160
+truck.fuel; // -> 160
 ```
 
 <i>Summary:</i>
@@ -501,7 +501,7 @@ function multiply(a, b) {
 
 let multiplyByTwo = multiply.bind(this, 2);
 
-multiplyByTwo(4); // => 8
+multiplyByTwo(4); // -> 8
 ```
 
 ---

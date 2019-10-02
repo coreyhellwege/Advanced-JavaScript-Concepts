@@ -48,7 +48,7 @@ let name = null;
 
 ```javascript
 let x;
-alert(x); // => "undefined"
+alert(x); // -> "undefined"
 ```
 
 #### 6. Symbol
@@ -91,7 +91,7 @@ You may have heard the term <i>"everything in Javascript is an object"</i>. This
 <i>Example use-case:</i>
 
 ```javascript
-true.toString(); // => 'true'
+true.toString(); // -> 'true'
 ```
 
 ---
@@ -104,7 +104,7 @@ Considering that behind the scenes arrays are technically objects, you can't use
 
 ```javascript
 const arr = [1, 2, 3];
-typeof arr; // => object
+typeof arr; // -> object
 ```
 
 Therefore we use the `Array.isArray()` method to determine whether the passed value is an Array.
@@ -113,7 +113,7 @@ Therefore we use the `Array.isArray()` method to determine whether the passed va
 
 ```javascript
 const arr = [1, 2, 3];
-Array.isArray(arr); // => true
+Array.isArray(arr); // -> true
 ```
 
 ---
@@ -130,13 +130,13 @@ When assigning a variable (a) a primitive value the equals operator sets up a lo
 const a = 5;
 const b = a;
 
-console.log(a); // => 5
-console.log(b); // => 5
+console.log(a); // -> 5
+console.log(b); // -> 5
 
 a = 1;
 
-console.log(a); // => 1
-console.log(b); // => 5
+console.log(a); // -> 1
+console.log(b); // -> 5
 ```
 
 ## Pass by Reference (objects)
@@ -149,13 +149,13 @@ When a variable (a) is set equal to an object, the equals operator identifies th
 let a = { name: "Corey" };
 let b = a;
 
-console.log(a); // => {name: "Corey"}
-console.log(b); // => {name: "Corey"}
+console.log(a); // -> {name: "Corey"}
+console.log(b); // -> {name: "Corey"}
 
 a.name = "Billy";
 
-console.log(a); // => {name: "Billy"}
-console.log(b); // => {name: "Billy"}
+console.log(a); // -> {name: "Billy"}
+console.log(b); // -> {name: "Billy"}
 ```
 
 If you want to copy an object and create a new one which won't continue to reference the original object you can use the spread operator.
@@ -167,7 +167,7 @@ let obj = { a: "a", b: "b", c: "c" };
 let clone = { ...obj };
 
 obj.c = 4;
-console.log(clone); // => {a: 'a', b: 'b', c: 'c'}
+console.log(clone); // -> {a: 'a', b: 'b', c: 'c'}
 ```
 
 Note: Any nested objects will still reference the original object using this method. Instead you can use `JSON.parse()` and `JSON.stringify()` to clone objects which contain nested objects. Avoid using this on large objects as it can cause performance issues.
@@ -187,7 +187,7 @@ let superClone = JSON.parse(JSON.stringify(obj));
 
 obj.c.x = "y";
 
-console.log(superClone); // => {a: 'a', b: 'b', c: { x: 'x'} }
+console.log(superClone); // -> {a: 'a', b: 'b', c: { x: 'x'} }
 ```
 
 ---
