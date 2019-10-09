@@ -270,3 +270,210 @@ function sayAge() {
 
 sayAge() // -> my age is 26
 ```
+
+---
+<br>
+
+## Inheritance
+
+Here we're going to create a base (super) class of Character and then create a sub class of Elf which will extend Character, inheriting it's properties. Elf will now have a prototype of Character.
+
+The constructor within the Elf class exists only within Elf. If we want to set any properties within this constructor using the `this` keyword, we have to use the `super` keyword to call the superclass first. In doing so `super` will run the constructor and give us an instance of the Character base class. The `this` keyword will now refer to that instance, and we can now add on additional properties for the Elf subclass.
+
+```javascript
+class Character {
+    constructor(name, weapon) {
+        this.name = name;
+        this.weapon = weapon;
+    }
+    attack() {
+        return 'attack with ' + this.weapon;
+    }
+}
+
+class Elf extends Character {
+    constructor(name, weapon, type) {
+        super(name, weapon);
+        this.type = type;
+    }
+}
+
+class Ogre extends Character {
+    constructor(name, weapon, colour) {
+        super(name, weapon);
+        this.colour = colour;
+    }
+    makeFort() {
+        return 'Strong fort made';
+    }
+}
+
+const dobby = new Elf('dobby', 'cloth', 'house');
+
+const shrek = new Ogre('shrek', 'club', 'green');
+shrek.makeFort() // -> Strong fort made
+```
+
+---
+<br>
+
+## Public & Private - Protected properties and methods
+
+<i>[Reference Article](https://javascript.info/private-protected-properties-methods)</i>
+
+### Internal and external interface
+
+In object-oriented programming, properties and methods are split into two groups:
+
+<b>Internal interface</b> – Methods and properties are accessible from other methods of the class, but not from the outside.
+
+<b>External interface</b> – Methods and properties are accessible also from outside the class.
+
+In JavaScript, there are two types of object fields (properties and methods):
+
+<b>Public:</b> accessible from anywhere. They comprise the external interface. Till now we were only using public properties and methods.
+
+<b>Private:</b> accessible only from inside the class. These are for the internal interface.
+
+<br>
+
+#### <i>Example:</i> Let's make a coffee machine
+
+```javascript
+class CoffeeMachine {
+    waterAmount = 0;
+
+    constructor(power) {
+        this.power = power;
+        console.log(`Created a coffee machine. Power: ${power}.`)
+    }
+}
+
+const nespresso = new CoffeeMachine(100);
+// -> Created a coffee machine. Power: 100.
+
+nespresso.waterAmount = 200;
+```
+
+#### Protected properties
+
+Now let’s make the `waterAmount` property protected so we have more control over it. For instance, we don’t want anyone to set it below zero.
+
+Protected properties are usually prefixed with an underscore `_`.
+
+```javascript
+class CoffeeMachine {
+    _waterAmount = 0;
+
+    set waterAmount(value) {
+        if (value < 0) throw new Error('Negative water');
+        this._waterAmount = value;
+    }
+
+    get waterAmount() {
+        return this._waterAmount;
+    }
+
+    constructor(power) {
+        this.power = power;
+        console.log(`Created a coffee machine. Power: ${power}.`)
+    }
+}
+
+const nespresso = new CoffeeMachine(100);
+// -> Created a coffee machine. Power: 100.
+
+nespresso.waterAmount = -50; // -> Uncaught Error: Negative water
+```
+
+#### Read-only properties
+
+Let’s make the `power` property read-only. 
+
+Some properties will be set at creation time and never modified. That’s exactly the case for a coffee machine: power never changes.
+
+To do so, we only need to make getter, but not the setter:
+
+```javascript
+class CoffeeMachine {
+    _waterAmount = 0;
+
+    set waterAmount(value) {
+        if (value < 0) throw new Error('Negative water');
+        this._waterAmount = value;
+    }
+
+    get waterAmount() {
+        return this._waterAmount;
+    }
+
+    constructor(power) {
+        this._power = power;
+    }
+
+    get power() {
+        return this._power;
+    }
+}
+
+const nespresso = new CoffeeMachine(100);
+
+console.log(`Power is: ${nespresso.power}W`); // -> Power is 100W
+
+nespresso.power = 250; // -> Error (no setter)
+```
+
+#### Private properties
+
+<i>Note: Not yet universally supported.</i>
+
+There’s a finished JavaScript proposal, almost in the standard, that provides language-level support for private properties and methods.
+
+Privates should start with `#`. They are only accessible from inside the class.
+
+For instance, here’s a private `#waterLimit` property and the water-checking private method `#checkWater`:
+
+```javascript
+class CoffeeMachine {
+  #waterLimit = 200;
+
+  #checkWater(value) {
+    if (value < 0) throw new Error("Negative water");
+    if (value > this.#waterLimit) throw new Error("Too much water");
+  }
+
+}
+
+let nespresso = new CoffeeMachine();
+
+// can't access privates from outside of the class
+nespresso.#checkWater(); // Error
+nespresso.#waterLimit = 1000; // Error
+```
+
+On the language level, `#` is a special sign that the field is private. We can’t access it from outside or from inheriting classes.
+
+Private fields do not conflict with public ones. We can have both private `#waterAmount` and public`#waterAmount` fields at the same time.
+
+```javascript
+class CoffeeMachine {
+
+  #waterAmount = 0;
+
+  get waterAmount() {
+    return this.#waterAmount;
+  }
+
+  set waterAmount(value) {
+    if (value < 0) throw new Error("Negative water");
+    this.#waterAmount = value;
+  }
+}
+
+let machine = new CoffeeMachine();
+
+machine.waterAmount = 100;
+alert(machine.#waterAmount); // Error
+```
+
+Unlike protected ones, private fields are enforced by the language itself. That’s a good thing. But if we inherit from `CoffeeMachine`, then we’ll have no direct access to `#waterAmount`. We’ll need to rely on `waterAmount` getter/setter. In many scenarios such limitation is too severe. If we extend a `CoffeeMachine`, we may have legitimate reason to access its internals. That’s why protected fields are used more often, even though they are not supported by the language syntax.
