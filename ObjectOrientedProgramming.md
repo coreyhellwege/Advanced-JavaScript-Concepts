@@ -77,9 +77,11 @@ Objects of the same type are created by calling the constructor function with th
 
 In JavaScript, the thing called `this` is the object that "owns" the code. The value of `this`, when used in an object, is the object itself. This is because the execution context changes after an object is created. In a constructor function `this` does not have a value. It is a substitute for the new object. The value of `this` will become the new object when a new object is created.
 
-<i>Note that this is not a variable. It is a keyword. You cannot change the value of this.</i>
+<i>Note that `this` is not a variable. It is a keyword. You cannot change the value of `this`.</i>
 
 As a rule all constructor functions should start with a capital letter to let other programmers know that you need to call this function using the `new` keyword.
+
+To add properties to a constructor function you must prepend them with `this`.
 
 ```javascript
 function Elf(name, weapon) {
@@ -106,3 +108,165 @@ Peter doesn't have `attack` as it's own method but when `Peter.attack()` gets ca
 This is efficient because `attack` now exists in the same location in memory and we now no longer have to copy it multiple times in order to use it.
 
 <i>Note: Remember, we can't use arrow functions in constructors because arrow functions are lexically scoped and will point the value of `this` back to the function itself where it was written.</i>
+
+#### Using ES6 Classes
+
+Constructor functions inside classes get run every time we instantiate the class.
+
+```javascript
+class Elf {
+    constructor(name, weapon) {
+        this.name = name;
+        this.weapon = weapon;
+    }
+    attack() {
+        return 'attack with ' + this.weapon
+    }
+}
+
+const peter = new Elf('Peter', 'stones')
+peter.attack() // -> attack with stones
+
+console.log(peter instanceof Elf) // -> true
+```
+
+<i>Note: In JavaScript ES6 classes are syntactic sugar. Under the hood they are still technically using prototypal inheritance. JavaScript classes are still technically objects.</i>
+
+---
+<br>
+
+## More of `this`
+
+#### Implicit Binding
+
+```javascript
+const person = {
+    name: 'Corey',
+    age: 26,
+    hi() {
+        console.log('Hi ' + this.name)
+    }
+}
+
+person.hi() // -> Hi Corey
+```
+
+#### Explicit Binding: with `call()`
+
+We know that in order to tell what the this keyword is referencing we first have to look at where the function is being invoked. Now, this brings up the question, how can we invoke greet but have it be invoked with the `this` keyword referencing the person object. We can’t just do person.greet() like we did before because person doesn’t have a greet method. In JavaScript, every function contains a method which allows you to do exactly this and that method is named `call()`. `call()` is a method on every function that allows you to invoke the function specifying in what context the function will be invoked.
+
+Again, `call()` is a property on every function and the first argument you pass to it will be the context (or the focal object) in which the function is invoked. In other words, the first argument you pass to call will be what the `this` keyword inside that function is referencing.
+
+```javascript
+function greet(lang1, lang2, lang3) {
+  console.log(`Hello, my name is ${this.name} and I know ${lang1}, ${lang2} & ${lang3}.`)
+}
+
+const person = {
+    name: 'Corey',
+    age: 26
+}
+
+greet.call(person, 'JavaScript', 'PHP', 'Ruby')
+// -> Hello, my name is Corey and I know JavaScript, PHP & Ruby.
+```
+
+#### Explicit Binding: with `apply()`
+
+`apply()` is the exact same thing as `call()`, but instead of passing in arguments one by one, you can pass in a single array and it will spread each element in the array out for you as arguments to the function.
+
+```javascript
+function greet(lang1, lang2, lang3) {
+  console.log(`Hello, my name is ${this.name} and I know ${lang1}, ${lang2} & ${lang3}.`)
+}
+
+const person = {
+    name: 'Corey',
+    age: 26
+}
+
+const languages = ['JavaScript', 'PHP', 'Ruby']
+
+greet.apply(person, languages)
+// -> Hello, my name is Corey and I know JavaScript, PHP & Ruby.
+```
+
+#### Explicit Binding: with `bind()`
+
+`bind()` is the exact same as `call()` but instead of immediately invoking the function, it’ll return a new function that you can invoke at a later time. Therefore we should save it to a variable.
+
+```javascript
+function greet(lang1, lang2, lang3) {
+  console.log(`Hello, my name is ${this.name} and I know ${lang1}, ${lang2} & ${lang3}.`)
+}
+
+const person = {
+    name: 'Corey',
+    age: 26
+}
+
+const greeting = greet.bind(person, 'JavaScript', 'PHP', 'Ruby')
+
+greeting() // -> Hello, my name is Corey and I know JavaScript, PHP & Ruby.
+```
+
+#### `new` Binding
+
+The third rule for figuring out what the this keyword is referencing is called the `new` binding. Whenever you invoke a function with the `new` keyword, under the hood, the JavaScript interpreter will create a brand new object for you and call it `this`. So, naturally, if a function was called with `new`, the `this` keyword is referencing that new object that the interpreter created.
+
+```javascript
+function Person(name, age) {
+  /*
+    Under the hood, JavaScript creates a new object called `this`
+    which delegates to the Person's prototype on failed lookups. If a
+    function is called with the new keyword, then it's this new object
+    that the interpreter created that the this keyword is referencing.
+  */
+
+  this.name = name
+  this.age = age
+}
+
+const me = new Person('Corey', 26)
+```
+
+#### Lexical Binding
+
+With arrow functions, `this` is determined “lexically”. Arrow functions don’t have their own `this`. Instead, just like with variable lookups, the JavaScript interpreter will look to the enclosing (parent) scope to determine what `this` is referencing.
+
+```javascript
+const person = {
+  name: 'Corey',
+  age: 26,
+  languages: ['JavaScript', 'PHP', 'Ruby'],
+  
+  greet() {
+    const hello = `Hello, my name is ${this.name} and I know `
+
+    const langs = this.languages.reduce((str, lang, i) => {
+      if (i === this.languages.length - 1) {
+        return `${str} and ${lang}.`
+      }
+      return `${str} ${lang},`
+    })
+
+    console.log(hello + langs)
+  }
+}
+
+person.greet() // -> Hello, my name is Corey and I know JavaScript PHP, and Ruby.
+```
+
+#### window Binding
+
+When we’re not using `call`, `apply`, `bind`, or the `new` keyword, by default `this` will reference the `window` object. What that means is if we add an age property to the `window` object, then when we invoke our sayAge function, `this.age` will be whatever the age property is on the `window` object.
+
+```javascript
+age = 26
+
+function sayAge() {
+  console.log(`My age is ${this.age}`)
+}
+
+sayAge() // -> my age is 26
+```
