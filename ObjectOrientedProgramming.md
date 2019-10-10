@@ -477,3 +477,75 @@ alert(machine.#waterAmount); // Error
 ```
 
 Unlike protected ones, private fields are enforced by the language itself. That’s a good thing. But if we inherit from `CoffeeMachine`, then we’ll have no direct access to `#waterAmount`. We’ll need to rely on `waterAmount` getter/setter. In many scenarios such limitation is too severe. If we extend a `CoffeeMachine`, we may have legitimate reason to access its internals. That’s why protected fields are used more often, even though they are not supported by the language syntax.
+
+---
+<br>
+
+## 4 Pillars of OOP
+
+![4 Pillars of OOP](./Assets/PillarsOOP.png)
+
+### 1. Encapsulation
+
+Encapsulation, in object-oriented programming, is the bundling of data with the methods that operate on it, or the restricting of direct access to some of an object's components. Encapsulation is used to hide the values or state of an object inside a class, preventing direct access to them. Publicly accessible methods are generally provided in the class (getters and setters) to access the values, and other classes call these methods to retrieve and modify values within the object.
+
+### 2. Abstraction
+
+Abstraction is the process of taking away characteristics from something in order to reduce it to a set of essential characteristics. Through the process of abstraction, a programmer hides all but the relevant data about an object in order to reduce complexity and increase efficiency. 
+
+Objects in an OOP language provide an abstraction that hides the internal implementation details. Similar to the coffee machine in your kitchen, you just need to know which methods of the object are available to call and which input parameters are needed to trigger a specific operation. But you don’t need to understand how this method is implemented and which kinds of actions it has to perform to create the expected result.
+
+### 3. Inheritance
+
+In object-oriented programming, inheritance enables new objects to take on the properties of existing objects. A class that is used as the basis for inheritance is called a superclass or base class. A class that inherits from a superclass is called a subclass or derived class.
+
+Inheritance is the mechanism of basing an object or class upon another object (prototype-based inheritance) or class (class-based inheritance) to create a new implementation while maintaining the same behaviors. Also defined as deriving new classes from existing ones and forming them into a hierarchy of classes. In most class-based object-oriented languages, an object created through inheritance (child object) acquires all the properties and behaviors of the parent object (except for constructors).
+
+### 4. Polymorphism
+
+Polymorphism is an object-oriented programming concept that refers to the ability of a variable, function or object to take on multiple forms. A language that features polymorphism allows developers to program in the general rather than program in the specific.
+
+More specifically, it is the ability to redefine methods for derived classes. For example, given a base class <i>shape</i>, polymorphism enables the programmer to define different <i>area</i> methods for any number of derived classes, such as circles, rectangles and triangles. No matter what <i>shape</i> an object is, applying the <i>area</i> method to it will return the correct results.
+
+```javascript
+class Character {
+    constructor(name, weapon) {
+        this.name = name;
+    }
+    attack() {
+        return 'attack with ' + this.weapon;
+    }
+}
+
+class Elf extends Character {
+    constructor(name, type) {
+        super(name);
+        this.type = type;
+    }
+    attack(spell) {
+        return this.name + ` attacked by casting a ${spell} spell.`;
+    }
+}
+
+class Ogre extends Character {
+    constructor(name, colour) {
+        super(name);
+        this.colour = colour;
+    }
+    attack(type, weapon) {
+        return this.name + ` used the ${type} attack with a ${weapon}.`;
+    }
+}
+
+const dobby = new Elf('Dobby', 'House Elf');
+dobby.attack('voodoo'); // -> Dobby attacked by casting a voodoo spell.
+
+const shrek = new Ogre('Shrek', 'green');
+shrek.attack('smash', 'club'); // -> Shrek used the smash attack with a club.
+```
+
+In this simple example of polymorphism we're doing <i>method overwriting</i>, where the same method acts differently for each type of class, as well as <i>method overloading</i>, where extra features or parameters are added to a method to extend its functionality. 
+
+So the overarching idea with polymorphism in object oriented programming is the ability to process objects differently depending on their datatype or class. Because JavaScript is a dynamically typed language it actually limits the amount of polymorphism we can achieve, but the idea is still the same.
+
+The ability to reuse functionality and customize methods to certain objects is efficient and means we don't need to copy and repeat code.
