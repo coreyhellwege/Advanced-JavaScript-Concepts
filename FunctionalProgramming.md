@@ -82,4 +82,22 @@ A useful analogy to think of is that computers are better at being imperative an
 
 ![Imperative Vs. Declarative](./Assets/ImperativeDeclarative.png)
 
-Machine code is very imperative. When we declare a variable the computer receives a lot of specific instructions on where to put it in which memory space, when to modify it and so on. Its very descriptive of how to do things. In contrast, as we go higher up the chain to a higher level language, it becomes more declarative. Instead of giving specific instructions of where to store it in memory etc, we just declare the variable with some sort of data and tell it what we need to get done but not how to do it. The computer takes care of that for us. 
+Machine code is imperative. When we declare a variable the computer receives specific instructions related to where it should be stored in memory space, when to modify it and so on. Its very descriptive about how to do things. In contrast, as we go higher up the chain to higher level languages it becomes more declarative. Instead of giving specific instructions, we just declare the variable with some sort of data and tell it what we need to achieve but not how to do it. The computer takes care of that for us.
+
+<i>JQuery is an example of a fairy imperative language, and the React framework operates in a fairly declarative fashion.</i>
+
+<i>Example:</i>
+
+`for` loops can be considered an imperative style of writing code
+
+```javascript
+for (let i = 0; i < 1000; i++) {
+    console.log(i) // -> 1,2,3,4...1000
+}
+```
+
+One way of making a `for` loop more declarative is to use `forEach()` instead
+
+```javascript
+[1,2,3].forEach(item => console.log(item)) // -> 1,2,3
+```
