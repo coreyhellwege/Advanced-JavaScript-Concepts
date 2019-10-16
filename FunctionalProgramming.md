@@ -101,3 +101,80 @@ One way of making a `for` loop more declarative is to use `forEach()` instead
 ```javascript
 [1,2,3].forEach(item => console.log(item)) // -> 1,2,3
 ```
+<br>
+
+### <i>Functional programming teaches us be more declarative.</i>
+---
+<br>
+
+## Immutability
+
+In functional programming, immutability relates to not changing data or state but instead making copies of it and returning a new state every time. 
+
+Doesn't that just fill up our memory? That's where structural sharing comes in.
+
+### Structural Sharing
+
+![Structural Sharing](./Assets/StructuralSharing.png)
+
+When a new copy of a datatype (object, array etc) is created instead of copying everything only the changes made to the state are copied. This saves memory. 
+
+---
+<br>
+
+## Higher Order Functions
+
+A higher order function is a function that does one of two things. It either (1) takes one or more functions as arguments, or (2) returns a function as a result, often called a callback.
+
+<i>Example 1:</i>
+
+```javascript
+const hof = () => () => 'hello';
+
+hof() // -> Function () => 'hello'
+
+hof()() // -> hello
+```
+
+<i>Example 2:</i>
+
+```javascript
+const hof = (fn) => fn('hello');
+
+hof(function(x){ console.log(x) }) // -> hello
+```
+
+---
+<br>
+
+## Currying
+
+Currying is when you break down a function that takes multiple arguments into a series of functions that each take only one argument.
+
+<i>Example</i>
+
+```javascript
+const multiply = (a,b) => a * b;
+```
+
+Instead of this function taking two parameters, we're going to give the first function one parameter which returns another function, and that function will take another parameter which will multiply `a` with `b`. Because of closures we can access the `a` variable inside of the `b` function. 
+
+```javascript
+const curriedMultiply = (a) => (b) => a * b;
+
+curriedMultiply(5)(4); // -> 20
+```
+
+### Why is this useful?
+
+You can now create additional utility functions ontop of this function. So you can see that in this example we're essentially saving the first function with a set argument passed into the parameter to a new variable. Then when we can use that variable as a new function which only takes an input for the second function. 
+
+```javascript
+const curriedMultiplyBy5 = curriedMultiply(5);
+
+curriedMultiplyBy5(6) // -> 30
+curriedMultiplyBy5(10) // -> 50
+```
+
+
+
