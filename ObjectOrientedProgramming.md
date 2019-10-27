@@ -276,6 +276,9 @@ sayAge() // -> my age is 26
 
 ## Inheritance
 
+![Inheritance](./Assets/Inheritance.png)
+
+
 Here we're going to create a base (super) class of Character and then create a sub class of Elf which will extend Character, inheriting it's properties. Elf will now have a prototype of Character.
 
 The constructor within the Elf class exists only within Elf. If we want to set any properties within this constructor using the `this` keyword, we have to use the `super` keyword to call the superclass first. In doing so `super` will run the constructor and give us an instance of the Character base class. The `this` keyword will now refer to that instance, and we can now add on additional properties for the Elf subclass.

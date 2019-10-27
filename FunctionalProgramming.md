@@ -176,5 +176,106 @@ curriedMultiplyBy5(6) // -> 30
 curriedMultiplyBy5(10) // -> 50
 ```
 
+<br>
 
+## Partial Application
 
+![Partial Application](./Assets/PartialApplication.png)
+
+Partial Application is a technique of fixing a number of arguments to a function, then producing another function of smaller arguments i.e binding values to one or more of those arguments, and using closures to later be called with the rest of the arguments.
+
+```javascript
+function addition(x, y) {
+   return x + y;
+}
+
+const plus5 = addition.bind(null, 5)
+
+plus5(10) // -> 15
+```
+
+<i>Note: this value does not matter for the (non-method) function addition which is why it is null above.</i>
+
+<br>
+
+### Difference between Currying & Partial Application
+
+- Currying always produces nested unary (1-ary) functions. The transformed function is still largely the same as the original.
+- Partial application produces functions of arbitrary number of arguments. The transformed function is different from the original — it needs less arguments.
+
+---
+<br>
+
+## Difference between Parameters & Arguments
+
+Function parameters are placeholders that are used to access data input (arguments) to that function. The following function defines two parameters `x` and `y`:
+
+```javascript
+function addition(x, y) {
+   return x + y;
+}
+```
+
+Arguments are the actual values passed to a function when the function is called. We can say that function defines parameters and it takes arguments.
+
+```javascript
+addition(5,10)
+```
+
+### Arity
+
+Arity of a function simply refers to the number of arguments that the function takes.
+
+---
+<br>
+
+### Exercise:
+
+Implement a cart feature using functional programming:
+1. Add items to cart
+2. Add 10% tax to item in cart
+3. Buy item: cart --> purchases
+4. Empty cart
+
+```javascript
+// create our own compose function
+const compose = (f,g) => (...args) => f(g(...args));
+
+const user = {
+    name: 'Corey',
+    active: true,
+    cart: [],
+    purchases: []
+}
+
+const purchaseItem = (...funcs) => funcs.reduce(compose);
+
+purchaseItem(emptyCart, buyItem, applyTax, addToCart)(user, {name: 'laptop', price: 600})
+
+function addToCart(user, item) {
+    const updateCart = user.cart.concat(item)
+    return Object.assign({}, user, { cart: updateCart })
+}
+
+function applyTax(user) {
+    const {cart} = user;
+    const taxRate = 1.1;
+    const updatedCart = cart.map(item => {
+        return {
+            name: item.name,
+            price: item.price * taxRate
+        }
+    })
+    return Object.assign({}, user, { cart: updatedCart })
+}
+
+function buyItem(user) {
+    return Object.assign({}, user, { purchases: user.cart })
+}
+
+function emptyCart(user) {
+    return Object.assign({}, user, { cart: [] })
+}
+
+// -> { name: 'Corey', active: true, cart: [], purchases: [{ name: 'laptop', price: 660 }]}
+```
