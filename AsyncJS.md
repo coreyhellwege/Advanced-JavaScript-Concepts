@@ -199,18 +199,43 @@ getAsyncData(“someValue”)
 
 ## Async/Await
 
-Async/Await is the next step in the evolution of handling asynchronous operations in JavaScript. It gives you two new keywords to use in your code: `async` and `await`. Async is for declaring that a function will handle asynchronous operations and await is used to declare that we want to await the result of an asynchronous operation inside a function that has the async keyword.
+Async/Await is the next step in the evolution of handling asynchronous operations in JavaScript. It is part of ES8 and is built on top of promises. It gives you two new keywords to use in your code: `async` and `await`. Async is for declaring that a function will handle asynchronous operations and await is used to declare that we want to await the result of an asynchronous operation inside a function that has the async keyword. An async function is a function that returns a promise. The benefit of async await is that it makes code easier to read by appearing to be more synchronous. 
 
 A basic example of using async/await looks like this:
 
 ```javascript
 async function getSomeAsyncData(value){
-    const result = await fetchTheData(someUrl, value);
+    const firstResult = await fetchTheData(someUrl, value);
+    const secondResult = await fetchMoreData(someUrl, value);
     return result;
 }
 ```
 
-A function call can only have the `await` keyword if the function being called is “awaitable”. A function is “awaitable” if it has the `async` keyword or if it returns a Promise. Functions with the `async` keyword are interchangeable with functions that return Promises:
+A function call can only have the `await` keyword if the function being called is “awaitable”. A function is “awaitable” if it has the `async` keyword or if it returns a Promise. 
+
+The `await` keyword will pause the parent function until a response comes back. And you can assign an `await` function to a variable which will contain the result after it resolves.
+
+```javascript
+async function fetchUsers(){
+    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    const data = await response.json();
+    console.log(data);
+}
+
+fetchUsers()
+```
+
+![Async Await](./Assets/AsyncAwait.png)
+
+<i>The same way of achieving this with a Promise would be as follows:</i>
+
+```javascript
+fetch('https://jsonplaceholder.typicode.com/users')
+    .then(resp => resp.json())
+    .then(console.log)
+```
+
+Functions with the `async` keyword are interchangeable with functions that return Promises:
 
 ```javascript
 function fetchTheData(someValue){
@@ -230,6 +255,30 @@ async function getSomeAsyncData(value){
     const result = await fetchTheData(value);
     return result;
 }
+```
+You can loop through several requests in one async await function. And remember, we can also return a promise.
+Here we are using a function expression and ES6 destructuring.
+
+```javascript
+const urls = [
+    'https://jsonplaceholder.typicode.com/users',
+    'https://jsonplaceholder.typicode.com/posts',
+    'https://jsonplaceholder.typicode.com/albums'
+]
+
+const getData = async function() {
+    const [ users, posts, albums ] =
+    await Promise.all(
+        urls.map(url => fetch(url)
+            .then(resp => resp.json())
+        )
+    )
+    console.log('users', users)
+    console.log('posts', posts)
+    console.log('albums', albums)
+}
+
+getData()
 ```
 
 ## Error handling with async/await
@@ -280,4 +329,6 @@ Also, async/await still resolves as a Promise in the top level of your program, 
 ---
 
 <br>
+
+## ES9
 
