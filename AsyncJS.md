@@ -2,11 +2,12 @@
 
 Asynchronous programming refers to the occurrence of events independently of the main program flow. It is a means of parallel programming in which a unit of work runs separately from the main application thread and then notifies the calling thread of its completion, failure or progress. An example would be a program making a request to a third-party API over the web and then waiting for it to return some data. Simply put, asynchronous functions are just functions that can be executed later.
 
-In multi-threaded programming languages (like Java or C#) asynchronous code is run on separate threads in parallel with the main program flow. This is not the case with JavaScript. JavaScript is single threaded, meaning all code is executed in a sequence, not in parallel. 
+In multi-threaded programming languages (like Java or C#) asynchronous code is run on separate threads in parallel with the main program flow. This is not the case with JavaScript. JavaScript is single threaded, meaning all code is executed in a sequence, not in parallel.
 
 The web browser or NodeJs allows us to use asynchronous code so we can interact with things outside the world of JavaScript. This is handled by using what is called an “asynchronous non-blocking I/O model”. What that means is that while the normal execution of JavaScript is blocking, I/O operations are not. I/O operations can be fetching data over the internet with Ajax requests or over WebSocket connections, querying data from a database such as MongoDB or accessing the filesystem with the NodeJs “fs” module. All these kind of operations are done in parallel to the execution of the main program flow and it is not JavaScript that does these operations; to put it simply, the underlying JS engine does it.
 
 ---
+
 <br>
 
 ## How Does the Browser Execute Asynchronous Code?
@@ -20,6 +21,7 @@ As we know, the JavaScript engine is single-threaded. This means that only one c
 - The “Event Loop” checks on the job queues and, whenever the call stack is empty, pops the code from them and pushes it onto the call stack to be executed.
 
 The two queues that handle asynchronous code:
+
 - The callback queue.
 - The micro-task queue - which is used by promises.
 
@@ -41,12 +43,11 @@ This code is executed at some point in time after we have gone through the norma
 
 ### Web APIs
 
-The browser provides some features that contribute to the execution of asynchronous code without blocking the thread. These features are known as web APIs (browser). You might recognize several of them, like the timer, where the `setTimeout` and `setInterval` methods live, the `XMLHttpRequest` which is used by the fetch method, the Console API, the DOM, and the web storage API. 
+The browser provides some features that contribute to the execution of asynchronous code without blocking the thread. These features are known as web APIs (browser). You might recognize several of them, like the timer, where the `setTimeout` and `setInterval` methods live, the `XMLHttpRequest` which is used by the fetch method, the Console API, the DOM, and the web storage API.
 
 ### Summary
 
 So once our JavaScript engine sees something that is asynchronous it sends it over to the Web API which deals with it in the background. When it's done with whatever it is processing it will add the callback or the function that needs to be invoked to the callback queue. The event loop will then check to see if the call stack is empty, and the entire JavaScript file has been read. If it's empty it then pushes the asynchronous code onto the call stack.
-
 
 <br>
 
@@ -75,7 +76,7 @@ As you can see, `request` takes a function as its last argument. This function i
 
 ## Callback hell
 
-Callbacks are a good way to declare what will happen once an I/O operation has a result, but what if you want to use that data in order to make another request? You can only handle the result of the request within the callback function provided. 
+Callbacks are a good way to declare what will happen once an I/O operation has a result, but what if you want to use that data in order to make another request? You can only handle the result of the request within the callback function provided.
 
 In this example the variable “result” will not have a value when printed to the console at the last line:
 const request = require(‘request’);
@@ -103,20 +104,26 @@ In this example the variable “result” will not have a value when printed to 
 So if we want to do a second request based on the result of the first one, we have to do it inside the callback function of the first request because that is where the result will be available:
 
 ```javascript
-request('http://www.example.com', function (firstError, firstResponse, firstBody) {
-    if(firstError){
+request("http://www.example.com", function(
+  firstError,
+  firstResponse,
+  firstBody
+) {
+  if (firstError) {
+    // Handle error.
+  } else {
+    request(`http://www.example.com/${firstBody.someValue}`, function(
+      secondError,
+      secondResponse,
+      secondBody
+    ) {
+      if (secondError) {
         // Handle error.
-    }
-    else {
-        request(`http://www.example.com/${firstBody.someValue}`, function (secondError, secondResponse, secondBody) {
-            if(secondError){
-                // Handle error.
-            }
-            else {
-                // Use secondBody for something
-            }
-        });
-    }
+      } else {
+        // Use secondBody for something
+      }
+    });
+  }
 });
 ```
 
@@ -137,17 +144,16 @@ A promise may produce a single value sometime in the future, either a resolved v
 ```javascript
 // function that returns a promise
 someAsyncOperation(someParams)
-
-.then(function(result){
+  .then(function(result) {
     // Do something with the result
-})
+  })
 
-.catch(function(error){
+  .catch(function(error) {
     // Handle error
-});
+  });
 ```
 
-The true power of promises is revealed when you have several asynchronous operations that depend on the results of each other. "Axios" is a model which is similar to "request", but it uses promises instead of callbacks. 
+The true power of promises is revealed when you have several asynchronous operations that depend on the results of each other. "Axios" is a model which is similar to "request", but it uses promises instead of callbacks.
 
 Using axios, our callback hell example would look like this:
 
@@ -199,30 +205,30 @@ getAsyncData(“someValue”)
 
 ## Async/Await
 
-Async/Await is the next step in the evolution of handling asynchronous operations in JavaScript. It is part of ES8 and is built on top of promises. It gives you two new keywords to use in your code: `async` and `await`. Async is for declaring that a function will handle asynchronous operations and await is used to declare that we want to await the result of an asynchronous operation inside a function that has the async keyword. An async function is a function that returns a promise. The benefit of async await is that it makes code easier to read by appearing to be more synchronous. 
+Async/Await is the next step in the evolution of handling asynchronous operations in JavaScript. It is part of ES8 and is built on top of promises. It gives you two new keywords to use in your code: `async` and `await`. Async is for declaring that a function will handle asynchronous operations and await is used to declare that we want to await the result of an asynchronous operation inside a function that has the async keyword. An async function is a function that returns a promise. The benefit of async await is that it makes code easier to read by appearing to be more synchronous.
 
 A basic example of using async/await looks like this:
 
 ```javascript
-async function getSomeAsyncData(value){
-    const firstResult = await fetchTheData(someUrl, value);
-    const secondResult = await fetchMoreData(someUrl, value);
-    return result;
+async function getSomeAsyncData(value) {
+  const firstResult = await fetchTheData(someUrl, value);
+  const secondResult = await fetchMoreData(someUrl, value);
+  return result;
 }
 ```
 
-A function call can only have the `await` keyword if the function being called is “awaitable”. A function is “awaitable” if it has the `async` keyword or if it returns a Promise. 
+A function call can only have the `await` keyword if the function being called is “awaitable”. A function is “awaitable” if it has the `async` keyword or if it returns a Promise.
 
 The `await` keyword will pause the parent function until a response comes back. And you can assign an `await` function to a variable which will contain the result after it resolves.
 
 ```javascript
-async function fetchUsers(){
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    const data = await response.json();
-    console.log(data);
+async function fetchUsers() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const data = await response.json();
+  console.log(data);
 }
 
-fetchUsers()
+fetchUsers();
 ```
 
 ![Async Await](./Assets/AsyncAwait.png)
@@ -230,55 +236,52 @@ fetchUsers()
 <i>The same way of achieving this with a Promise would be as follows:</i>
 
 ```javascript
-fetch('https://jsonplaceholder.typicode.com/users')
-    .then(resp => resp.json())
-    .then(console.log)
+fetch("https://jsonplaceholder.typicode.com/users")
+  .then(resp => resp.json())
+  .then(console.log);
 ```
 
 Functions with the `async` keyword are interchangeable with functions that return Promises:
 
 ```javascript
-function fetchTheData(someValue){
-    return new Promise(function(resolve, reject){
-        getData(someValue, function(error, result){
-            if(error) {
-                reject(error);
-            }
-            else {
-                resolve(resutl);
-            }
-        })
+function fetchTheData(someValue) {
+  return new Promise(function(resolve, reject) {
+    getData(someValue, function(error, result) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(resutl);
+      }
     });
+  });
 }
 
-async function getSomeAsyncData(value){
-    const result = await fetchTheData(value);
-    return result;
+async function getSomeAsyncData(value) {
+  const result = await fetchTheData(value);
+  return result;
 }
 ```
+
 You can loop through several requests in one async await function. And remember, we can also return a promise.
 Here we are using a function expression and ES6 destructuring.
 
 ```javascript
 const urls = [
-    'https://jsonplaceholder.typicode.com/users',
-    'https://jsonplaceholder.typicode.com/posts',
-    'https://jsonplaceholder.typicode.com/albums'
-]
+  "https://jsonplaceholder.typicode.com/users",
+  "https://jsonplaceholder.typicode.com/posts",
+  "https://jsonplaceholder.typicode.com/albums"
+];
 
 const getData = async function() {
-    const [ users, posts, albums ] =
-    await Promise.all(
-        urls.map(url => fetch(url)
-            .then(resp => resp.json())
-        )
-    )
-    console.log('users', users)
-    console.log('posts', posts)
-    console.log('albums', albums)
-}
+  const [users, posts, albums] = await Promise.all(
+    urls.map(url => fetch(url).then(resp => resp.json()))
+  );
+  console.log("users", users);
+  console.log("posts", posts);
+  console.log("albums", albums);
+};
 
-getData()
+getData();
 ```
 
 ## Error handling with async/await
@@ -286,41 +289,39 @@ getData()
 Inside the scope of an async function you can use try/catch for error handling and even though you await an asynchronous operation, any errors will end up in that catch block:
 
 ```javascript
-async function getSomeData(value){
-    try {
-        const result = await fetchTheData(value);
-        return result;
-    }
-    catch(error){
-        // Handle error
-    }
+async function getSomeData(value) {
+  try {
+    const result = await fetchTheData(value);
+    return result;
+  } catch (error) {
+    // Handle error
+  }
 }
 ```
 
 As with a Promise chain, where you only need one `.catch()` even if you are doing several asynchronous calls, with async/await you only need to surround the code in the “first” async function with try catch. That function can await one or more other async functions which in return does their own asynchronous calls by awaiting one or more other async functions etc.
 
 ```javascript
-async function fetchTheFirstData(value){
-    return await get("someUrl", value);
+async function fetchTheFirstData(value) {
+  return await get("someUrl", value);
 }
 
-async function fetchTheSecondData(value){
-    return await getFromDatabase(value);
+async function fetchTheSecondData(value) {
+  return await getFromDatabase(value);
 }
 
-async function getSomeData(value){
-    try {
-        const firstResult = await fetchTheFirstData(value);
-        const result = await fetchTheSecondData(firstResult.someValue);
-        return result;
-    }
-    catch(error){
-        // Every error thrown in the whole “awaitable” chain will end up here.
-    }
+async function getSomeData(value) {
+  try {
+    const firstResult = await fetchTheFirstData(value);
+    const result = await fetchTheSecondData(firstResult.someValue);
+    return result;
+  } catch (error) {
+    // Every error thrown in the whole “awaitable” chain will end up here.
+  }
 }
 ```
 
-It is important to remember that although async/await may make your asynchronous calls look more synchronous, it is still executed with asynchronous I/O operations. Therefore the code handling the responses in the async functions will not be executed until that asynchronous operation has a result. 
+It is important to remember that although async/await may make your asynchronous calls look more synchronous, it is still executed with asynchronous I/O operations. Therefore the code handling the responses in the async functions will not be executed until that asynchronous operation has a result.
 
 Also, async/await still resolves as a Promise in the top level of your program, because `async` and `await` are just syntactical sugar for automatically creating, returning and resolving Promises.
 
@@ -332,3 +333,66 @@ Also, async/await still resolves as a Promise in the top level of your program, 
 
 ## ES9
 
+In ES9 the Rest/Spread operator has been extended to work with Objects. To better understand this let's first look at the `rest` and `spread` operators in the context of array destructuring and array literals.
+
+<br>
+
+### Array Destructuring
+
+As part of ES6, we introduced a new operator in array destructuring - the `rest` operator `...`
+
+When destructuring an array, the `rest` operator combines the remaining elements of an array into a variable.
+
+<i>Example:</i>
+
+```javascript
+let [x, ...remaining] = [1, 2, 3, 4, 5];
+
+console.log(x); // -> 1
+console.log(remaining); // -> [2,3,4,5]
+```
+
+This uses destructuring assignment to assign the first element to "x" and all the others to "remaining". Note: "remaining" can be called anything.
+
+### Array Literals
+
+Also as part of ES6, we introduced a new operator in array literals - the `spread` operator `...`
+
+When initializing an array - the `spread` operator copies the elements of an existing array into a new array.
+
+<i>Example:</i>
+
+```javascript
+let existingArray = [2, 3, 4, 5];
+let newArray = [1, ...existingArray];
+
+console.log(newArray); // [1, 2, 3, 4]
+```
+
+We initialize a new array with the value `1` and all the elements of "existingArray".
+
+<br>
+
+### Object Destructuring
+
+Similarly to arrays - when destructuring an object, the `rest` operator combines the remaining enumerable properties of that object into a new object, without those which weren’t already picked off by the destructuring pattern.
+
+```javascript
+let { x, a, ...remaining } = { x: 1, a: 2, b: 3, c: 4, d: 5 };
+
+console.log(x); // -> 1
+console.log(remaining); // -> {b: 3, c: 4, d: 5}
+```
+
+We use destructuring assignment to assign the value of “x” property into x, "a" property into a, and all the other properties into an object called "remaining".
+
+### Object Literals
+
+Similarly to arrays - when initializing an object, the `spread` operator copies the enumerable properties of an existing object into the new object:
+
+```javascript
+let existingObject = { x: 1, a: 2, b: 3 };
+let newObject = { ...existingObject, foo: () => {} };
+
+console.log(newObject); // {x: 1, a: 2, b: 3, foo: ƒ}
+```
