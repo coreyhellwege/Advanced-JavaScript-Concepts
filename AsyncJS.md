@@ -396,3 +396,127 @@ let newObject = { ...existingObject, foo: () => {} };
 
 console.log(newObject); // {x: 1, a: 2, b: 3, foo: ƒ}
 ```
+
+<br>
+
+### Finally
+
+The `finally()` method allows us to do something once a promise has finished, regardless of whether the `.then` runs or if the promise errors and the `.catch` runs. 
+
+The `finally()` method returns a Promise. When the promise is settled, i.e either resolved or rejected, the specified callback function is executed. It is usually added at the end of the promise.
+
+This helps to avoid duplicating code in both the promise's `then()` and `catch()` handlers.
+
+<i>Example:</i>
+
+In this example the promise resolves and then the `.finally` executes:
+
+```javascript
+const urls = [
+    'https://swapi.co/api/people/1',
+    'https://swapi.co/api/people/2',
+    'https://swapi.co/api/people/3',
+    'https://swapi.co/api/people/4'
+]
+
+Promise.all(urls.map(url => {
+    return fetch(url).then(people => people.json())
+}))
+    .then(array => {
+        console.log('1', array[0])
+        console.log('2', array[0])
+        console.log('3', array[0])
+        console.log('4', array[0])
+    })
+    .catch(err => console.log('Uh oh, im broken!', err))
+    .finally(() => console.log('Do something at the end'));
+
+    // -> 1 {name: "Luke Skywalker", height: "172"}...
+    // -> 'Do something at the end'
+```
+In this example the promise rejects and then the `.finally` executes:
+
+```javascript
+const urls = [
+    'https://swapi.co/api/people/1',
+    'https://swapi.co/api/people/2',
+    'https://swapi.co/api/people/3',
+    'https://swapi.co/api/people/4'
+]
+
+Promise.all(urls.map(url => {
+    return fetch(url).then(people => people.json())
+}))
+    .then(array => {
+        throw Error;
+        console.log('1', array[0])
+        console.log('2', array[0])
+        console.log('3', array[0])
+        console.log('4', array[0])
+    })
+    .catch(err => console.log('Uh oh, im broken!', err))
+    .finally(() => console.log('Do something at the end'));
+
+    // -> 'Uh oh, im broken!'
+    // -> 'Do something at the end'
+```
+
+<br>
+
+### For await of
+
+The `for await...of` statement creates a loop iterating over async iterable objects. It takes each item from an array of promises and returns all of the responses in the correct order.
+
+```javascript
+const urls = [
+  "https://jsonplaceholder.typicode.com/users",
+  "https://jsonplaceholder.typicode.com/posts",
+  "https://jsonplaceholder.typicode.com/albums"
+];
+```
+
+In this first example, we're simply declaring an array with 3 values and then assigning the response for each request to those values:
+
+```javascript
+const getData = async function() {
+    try {
+        const [ users, posts, albums ] = await Promise.all(urls.map(async function(url) {
+            const response = await fetch(url);
+            return response.json();
+        }));
+
+        console.log("users", users)
+        console.log("posts", posts)
+        console.log("albums", albums)
+        
+    } catch(err) {
+        console.log('oops', err)
+    }
+}
+```
+
+However in this next example, we're using the `for await...of` statement to loop through each request and extract the data, almost as if it were synchronous code:
+
+```javascript
+const getData2 = async function() {
+    
+    // firstly we create an array of fetch promises for each of the above url requests
+    const arrayOfPromises = urls.map(url => fetch(url));
+
+    // next we can use the 'for await of' to loop through each request
+    for await (let request of arrayOfPromises) {
+        
+        // and we will extract the data from each request
+        const data = await request.json();
+        console.log(data);
+    }
+}
+```
+
+So both examples will return the same results:
+
+```javascript
+// -> Users (10) [{…}, {…}, {…}...]
+// -> Posts (100) [{…}, {…}, {…}...]
+// -> Albums (100) [{…}, {…}, {…}...]
+```
