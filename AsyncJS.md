@@ -520,3 +520,35 @@ So both examples will return the same results:
 // -> Posts (100) [{…}, {…}, {…}...]
 // -> Albums (100) [{…}, {…}, {…}...]
 ```
+<br>
+
+### Job Queue
+
+![JavaScript Runtime with Job Queue](./Assets/JS_Runtime.png)
+
+As of ES6 browsers have introduced the “Job Queue” (or micro-task queue) to the JavaScript Runtime to accommodate the addition of Promises. 
+
+Because we now have the ability to natively handle asynchronous code using promises (instead of only using callbacks previously) the Job Queue was created in addition to the Callback Queue (or task queue). 
+
+The Job Queue is similar to the Callback Queue. It is smaller than the Callback Queue but it has a higher priority, meaning the Event Loop will check the Job Queue first and make sure it's empty before proceeding to the Callback Queue.
+
+<i>Example:</i>
+
+```javascript
+// callback queue (task queue)
+setTimeout(()=> { console.log('I am in the callback queue')}, 5)
+
+// job queue (micro-task queue)
+Promise.resolve('Hi').then((data) => console.log(data, 'I am in the job queue'))
+
+// regular synchronous code
+console.log('I am regular synchronous code')
+```
+
+To explain this, the above example will return in the order as follows:
+
+```javascript
+// -> I am regular synchronous code
+// -> Hi I am in the job queue
+// -> I am in the callback queue
+```
