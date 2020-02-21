@@ -552,3 +552,95 @@ To explain this, the above example will return in the order as follows:
 // -> Hi I am in the job queue
 // -> I am in the callback queue
 ```
+
+<br>
+
+### Parallel, Sequence, Race
+
+There are three main ways of managing promises:
+
+<i>Example:</i>
+
+```javascript
+const promisify = (item, delay) =>
+  new Promise((resolve) => 
+    setTimeout(() =>
+      resolve(item), delay
+    ));
+
+const a = () => promisify('a', 100);
+const b = () => promisify('b', 5000);
+const c = () => promisify('c', 3000);
+```
+
+#### Parallel
+
+Run them all at the same time.
+
+```javascript
+async function parallel() {
+  
+  const promises = [a(), b(), c()];
+  const [output1, output2, output3] = await Promise.all(promises);
+
+  return `parallel is done: ${output1} ${output2} ${output3}`
+}
+
+parallel().then(console.log);
+
+// -> Promise {<pending>} ...
+// -> parallel is done: a b c
+```
+
+#### Sequential
+
+Run them in an order, one by one.
+
+```javascript
+async function sequence() {
+
+  const output1 = await a();
+  const output2 = await b();
+  const output3 = await c();
+
+  return `sequence is done: ${output1} ${output2} ${output3}`
+}
+
+sequence().then(console.log);
+
+// -> Promise {<pending>} ...
+// -> sequence is done: a b c
+```
+
+#### Race
+
+Run them all but only return the one that resolved first.
+
+```javascript
+async function race() {
+
+  const promises = [a(), b(), c()];
+  const output1 = await Promise.race(promises);
+
+  return `race is done: ${output1}`;
+}
+
+race().then(console.log);
+
+// -> Promise {<pending>} ...
+// -> race is done: a
+```
+
+And if we run them all three async functions together we can see which order they resolve in:
+
+```javascript
+parallel().then(console.log);
+sequence().then(console.log);
+race().then(console.log);
+
+// -> Promise {<pending>} ...
+// -> race is done: a
+// -> parallel is done: a b c
+// -> sequence is done: a b c
+```
+
