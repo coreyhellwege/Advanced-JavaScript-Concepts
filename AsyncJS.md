@@ -643,4 +643,16 @@ race().then(console.log);
 // -> parallel is done: a b c
 // -> sequence is done: a b c
 ```
+<br>
 
+### Threads, Concurrency and Parallelism
+
+As we know, JavaScript is a single threaded language, but with it's asynchronous ability we can run tasks in background threads outside of JavaScript so that they don't affect the main thread. For example, when you open a new browser tab, the browser creates a new thread for that tab with its own JS call stack and memory heap. Then when you close that tab, the thread is destroyed. 
+
+In node.js background tasks can be handed off to worker threads which are part of the Libuv library.
+
+![Node.JS System Diagram](./Assets/node-system-diagram.jpeg)
+
+In the browser background tasks can be handed off to Web Workers, which are just separate JavaScript programs running on different threads in parallel to the main thread. 
+
+(FINISH VIDEO)
