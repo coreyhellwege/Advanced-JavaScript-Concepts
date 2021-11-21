@@ -9,7 +9,7 @@ The module scope is higher up than the function scope so that multiple functions
 
 In this way, with module scope, we can be explicit with which variables, classes or functions should be imported or exported in the module.
 
-An example of this old syntax is an <i>Immediately Invoked Function Expression</i>:
+An example of this old syntax is an <i>[Immediately Invoked Function Expression](https://developer.mozilla.org/en-US/docs/Glossary/IIFE)</i>:
 
 ```javascript
 var fightModule = (function() {
