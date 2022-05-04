@@ -8,7 +8,7 @@ JS Engines were written to improve the performace of JavaScript in the browser.
 
 This documentation alalyses the [V8 Chrome Engine](https://v8.dev).
 
-### <b>How it works:</b>
+### How it works:
 
 ![JavaScript Engine](./Assets/JS_Engine.png)
 
@@ -64,7 +64,7 @@ Both of these do exactly what compilers do: Take one language and convert into a
 
 </i>
 
-### <b>JIT Compiler</b>
+### JIT Compiler
 
 JIT (Just in time) compilers are essentially the combination of an interpreter and a compiler. They were designed to make JS Engines run faster.
 
@@ -138,19 +138,19 @@ You can think of the call stack as a region in memory which operates in 'first i
 
 ---
 
-## <b>Memory Heap</b>
+## Memory Heap
 
 In most native executable programs, there are two types of memory available: stack-based and heap-based memory.
 
 The heap is reserved for the memory allocation needs of the program. It is an area apart from the program code and the stack which stores program data in an unordered fashion.
 
-### <b>Garbage Collection</b>
+### Garbage Collection
 
 JavaScript is a garbage collected language. Data stored in the memory heap that isn't needed anymore gets cleared away to preserve memory. This helps prevent memory leaks.
 
 Garbage collection in JS uses the 'mark and sweep' algorithm. Essentially it marks data which is being used and needs to be kept, and sweeps away data which is no longer being used or referenced.
 
-### <b>Memory Leaks</b>
+### Memory Leaks
 
 A memory leak occurs when a computer program incorrectly manages memory allocations in such a way that memory which is no longer needed is not released. This is often due to unintentional references from other objects. Memory leaks in web pages often involve interaction between JavaScript objects and DOM elements.
 
@@ -176,15 +176,15 @@ The JS Runtime Environment executes asynchronous code in the background and uses
 
 All modern browsers have a JS engine as well as a JS runtime which provides a web API.
 
-### <b>Web Browser API</b>
+### Web Browser API
 
 Web API's are applications provided by the browser which can do a variety of tasks in the background such as sending HTTP requests, listening to DOM events, caching and database storage on the browser.
 
-### <b>The Heap</b>
+### The Heap
 
 The first container in the environment, which is also part of the V8 JS Engine, is called the ‘memory heap.’ As the V8 JS Engine comes across variables and function declarations in the code it stores them in the Heap.
 
-### <b>The Stack</b>
+### The Stack
 
 The second container in the environment is called the ‘call stack.’ It is also part of the V8 JS Engine. As the JS Engine comes across an actionable item, like a function call, it adds it to the Stack.
 
@@ -194,17 +194,17 @@ When a function returns a value, or is sent to the Web API container, it is popp
 
 <i>Note - the Stack is a data structure that runs LIFO — last in first out. No function other than the one at the top of the stack will ever be in focus, and the engine will not move to the next function unless the one above it is popped off.</i>
 
-### <b>The Web API Container</b>
+### The Web API Container
 
 The Web API calls that were sent to the Web API container from the Stack, like event listeners, HTTP/AJAX requests, or timing functions, sit there until an action is triggered. Either a ‘click’ happens, or the HTTP request finishes getting its data from its source, or a timer reaches its set time. In each instance, once an action is triggered, a ‘callback function’ is sent to the fourth and final container, the ‘callback queue.’
 
-### <b>The Callback Queue</b>
+### The Callback Queue
 
 The Callback Queue will store all the callback functions in the order in which they were added. It will ‘wait’ until the Stack is completely empty. When the Stack is empty it will send the callback function at the beginning of the queue to the Stack. When the Stack is clear again, it will send over its next callback function.
 
 <i>Note - the Queue is a data structure that runs FIFO — first in first out. Whereas the Stack uses a push and pop (add to end take from end), the Queue uses push and shift (add to end take from beginning).</i>
 
-### <b>The Event Loop</b>
+### The Event Loop
 
 The Event Loop can be thought of as a ‘thing’ inside the javascript runtime environment. It's job is to constantly look at the Stack and the Queue. If it sees the Stack is empty, it will notify the Queue to send over its next callback function. The Queue and the Stack might be empty for a period of time, but the event loop never stops checking both. At any time a callback function can be added to the Queue after an action is triggered from the Web API container.
 
