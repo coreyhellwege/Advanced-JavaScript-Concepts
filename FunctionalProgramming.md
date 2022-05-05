@@ -74,7 +74,7 @@ This function is idempotent because it returns the same result when called multi
 ---
 <br>
 
-## Imperative Vs. Declarative
+## Imperative vs Declarative
 
 <b>Imperative</b> code is code that tells the machine what to do and how to do it. <b>Declarative</b> code tells it what to do and what should happen.
 

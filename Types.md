@@ -8,7 +8,7 @@ Primitive types are data that only represent a single value. A variable of a pri
 
 These six types are considered to be primitives. A primitive is not an object and has no methods of its own. All primitives are immutable.
 
-#### 1. Number
+#### Number
 
 ```javascript
 const num = 5;
@@ -17,7 +17,7 @@ const num = 12.34;
 
 The number type represents both integer and floating point numbers
 
-#### 2. String
+#### String
 
 ```javascript
 let str = "Hello";
@@ -25,7 +25,7 @@ let str = "Hello";
 
 A string in JavaScript must be surrounded by quotes.
 
-#### 3. Boolean
+#### Boolean
 
 The boolean type has only two values: `true` and `false`.
 
@@ -34,7 +34,7 @@ let yes = true;
 let no = false;
 ```
 
-#### 4. Null
+#### Null
 
 `null` is the absence of a value. It’s a special value which represents “nothing”, “empty”.
 
@@ -42,7 +42,7 @@ let no = false;
 let name = null;
 ```
 
-#### 5. Undefined
+#### Undefined
 
 `undefined` means “value is not assigned”. If a variable is declared, but not assigned, then its value is undefined.
 
@@ -51,7 +51,7 @@ let x;
 alert(x); // -> "undefined"
 ```
 
-#### 6. Symbol
+#### Symbol
 
 The `symbol` type is used to create unique identifiers for objects.
 
@@ -65,7 +65,7 @@ Everything else is an `object` type.
 
 A non-primitive type doesn't contain the actual value directly. Instead it contains a reference to somewhere in memory where the value is stored.
 
-#### 7. Object
+#### Object
 
 The `object` type is special. All other types are called “primitive” because their values can contain only a single thing (be it a string or a number or whatever). In contrast, objects are used to store collections of data and more complex entities.
 

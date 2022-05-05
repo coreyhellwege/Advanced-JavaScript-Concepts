@@ -484,7 +484,7 @@ Unlike protected ones, private fields are enforced by the language itself. Thatâ
 ---
 <br>
 
-## 4 Pillars of OOP
+## The Four Pillars of OOP
 
 ![4 Pillars of OOP](./Assets/PillarsOOP.png)
 
